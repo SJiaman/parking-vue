@@ -50,7 +50,7 @@
         prop="typeId"
         header-align="center"
         align="center"
-        label="车位类型(0:固定车位，1:出租车位，2:临时车位)">
+        label="车位类型">
       </el-table-column>
       <el-table-column
         fixed="right"

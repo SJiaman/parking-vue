@@ -13,8 +13,8 @@
     <el-form-item label="车位状态" prop="state">
       <el-input v-model="dataForm.state" placeholder="车位状态"></el-input>
     </el-form-item>
-    <el-form-item label="车位类型(0:固定车位，1:出租车位，2:临时车位)" prop="typeId">
-      <el-input v-model="dataForm.typeId" placeholder="车位类型(0:固定车位，1:出租车位，2:临时车位)"></el-input>
+    <el-form-item label="车位类型" prop="typeId">
+      <el-input v-model="dataForm.typeId" placeholder="车位类型"></el-input>
     </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">

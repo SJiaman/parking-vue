@@ -4,6 +4,10 @@
       <div class="site-content">
         <div class="brand-info">
           <h2 class="brand-info__text">停车场管理系统</h2>
+          <h3>管理员登录</h3>
+          <p>用户名：admin 密码：admin</p> 
+          <h3>停车场保安登录</h3>
+          <p>用户名：admin 密码：admin</p> 
         </div>
         <div class="login-main">
           <h3 class="login-title">管理员登录</h3>
@@ -25,6 +29,10 @@
                 </el-col>
               </el-row>
             </el-form-item>
+             <div>
+                <el-radio v-model="radio" label="1" border>管理员</el-radio>
+                <el-radio v-model="radio" label="2" border>停车场保安</el-radio>
+             </div>
             <el-form-item>
               <el-button class="login-btn-submit" type="primary" @click="dataFormSubmit()">登录</el-button>
             </el-form-item>
@@ -46,6 +54,7 @@
           uuid: '',
           captcha: ''
         },
+        radio: '1',
         dataRule: {
           userName: [
             { required: true, message: '帐号不能为空', trigger: 'blur' }

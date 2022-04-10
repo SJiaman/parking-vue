@@ -3,7 +3,7 @@
     <div class="site-navbar__header">
       <h1 class="site-navbar__brand" @click="$router.push({ name: 'home' })">
         <a class="site-navbar__brand-lg" href="javascript:;">停车场管理系统</a>
-        <a class="site-navbar__brand-mini" href="javascript:;">人人</a>
+        <a class="site-navbar__brand-mini" href="javascript:;">停车场</a>
       </h1>
     </div>
     <div class="site-navbar__body clearfix">
@@ -38,7 +38,7 @@
         <el-menu-item class="site-navbar__avatar" index="3">
           <el-dropdown :show-timeout="0" placement="bottom">
             <span class="el-dropdown-link">
-              <img src="~@/assets/img/avatar.png" :alt="userName">{{ userName }}
+              <img src="~@/assets/img/avatar.gif" :alt="userName">{{ userName }}
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item @click.native="updatePasswordHandle()">修改密码</el-dropdown-item>

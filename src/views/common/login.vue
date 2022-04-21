@@ -1,16 +1,8 @@
 <template>
   <div class="site-wrapper site-page--login">
     <div class="site-content__wrapper">
-      <div class="site-content">
-        <div class="brand-info">
-          <h2 class="brand-info__text">停车场管理系统</h2>
-          <h3>管理员登录</h3>
-          <p>用户名：admin 密码：admin</p> 
-          <h3>停车场保安登录</h3>
-          <p>用户名：admin 密码：admin</p> 
-        </div>
         <div class="login-main">
-          <h3 class="login-title">管理员登录</h3>
+          <h3 class="login-title">停车场管理系统登录</h3>
           <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" status-icon>
             <el-form-item prop="userName">
               <el-input v-model="dataForm.userName" placeholder="帐号"></el-input>
@@ -38,7 +30,6 @@
             </el-form-item>
           </el-form>
         </div>
-      </div>
     </div>
   </div>
 </template>
@@ -139,37 +130,26 @@
       overflow-y: auto;
       background-color: transparent;
     }
-    .site-content {
-      min-height: 100%;
-      padding: 30px 500px 30px 30px;
-    }
-    .brand-info {
-      margin: 220px 100px 0 90px;
-      color: #fff;
-    }
-    .brand-info__text {
-      margin:  0 0 22px 0;
-      font-size: 48px;
-      font-weight: 400;
-      text-transform : uppercase;
-    }
-    .brand-info__intro {
-      margin: 10px 0;
-      font-size: 16px;
-      line-height: 1.58;
-      opacity: .6;
-    }
     .login-main {
+      // top: 0;
+      // right: 0;
+      // padding: 150px 300px 180px;
+      // width: 470px;
+      // min-height: 100%;
+      // background-color: #fff;
+      width: 350px;
+      height: 400px;
       position: absolute;
       top: 0;
+      left: 0;
+      bottom: 0;
       right: 0;
-      padding: 150px 60px 180px;
-      width: 470px;
-      min-height: 100%;
-      background-color: #fff;
+      margin: auto;
     }
     .login-title {
-      font-size: 16px;
+      font-size: 20px;
+      color: #fff;
+      text-align: center;
     }
     .login-captcha {
       overflow: hidden;
@@ -180,7 +160,7 @@
     }
     .login-btn-submit {
       width: 100%;
-      margin-top: 38px;
+      margin-top: 25px;
     }
   }
 </style>

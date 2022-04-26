@@ -12,6 +12,10 @@
         <el-radio label="light" border>light</el-radio>
         <el-radio label="dark" border>dark</el-radio>
       </el-radio-group>
+      <div>
+        <el-radio v-model="loginUser" label="admin" border>admin</el-radio>
+        <el-radio v-model="loginUser" label="common" border>common</el-radio>
+      </div>
     </el-form-item>
   </el-form>
 </template>
@@ -26,7 +30,11 @@
       sidebarLayoutSkin: {
         get () { return this.$store.state.common.sidebarLayoutSkin },
         set (val) { this.$store.commit('common/updateSidebarLayoutSkin', val) }
-      }
+      },
+       loginUser: {
+          get () { return this.$store.state.common.loginUser },
+          set (val) { this.$store.commit('common/updateLoginUser', val) }
+        }
     }
   }
 </script>

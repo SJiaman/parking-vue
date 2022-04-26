@@ -22,7 +22,3 @@ export default {
     '#FF4C52'  // 红色
   ]
 }
-// position: absolute;
-// left: 40%;
-// bottom: 20px;
-// text-align: center

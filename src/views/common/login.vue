@@ -21,10 +21,10 @@
                 </el-col>
               </el-row>
             </el-form-item>
-             <div>
-                <el-radio v-model="radio" label="1" border>管理员</el-radio>
-                <el-radio v-model="radio" label="2" border>停车场保安</el-radio>
-             </div>
+             <!-- <div>
+                <el-radio v-model="loginUser" label="admin" border>管理员</el-radio>
+                <el-radio v-model="loginUser" label="common" border>停车场保安</el-radio>
+             </div> -->
             <el-form-item>
               <el-button class="login-btn-submit" type="primary" @click="dataFormSubmit()">登录</el-button>
             </el-form-item>

@@ -8,7 +8,7 @@
         class="site-sidebar__menu">
         <el-menu-item index="home" @click="$router.push({ name: 'home' })">
           <icon-svg name="shouye" class="site-sidebar__menu-icon"></icon-svg>
-          <span slot="title">首页</span>
+          <span slot="title">控制台</span>
         </el-menu-item>
         <!-- <el-submenu index="demo">
           <template slot="title">
@@ -22,8 +22,8 @@
           <el-menu-item index="demo-ueditor" @click="$router.push({ name: 'demo-ueditor' })">
             <icon-svg name="editor" class="site-sidebar__menu-icon"></icon-svg>
             <span slot="title">ueditor</span>
-          </el-menu-item> -->
-        </el-submenu>
+          </el-menu-item> 
+        </el-submenu>-->
         <sub-menu
           v-for="menu in menuList"
           :key="menu.menuId"

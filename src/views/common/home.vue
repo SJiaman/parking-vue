@@ -119,13 +119,13 @@
           <div class="button">
             <el-button @click="getCompetence()">入库打开</el-button>
             <el-button @click="stopNavigator()">入库关闭</el-button>
-            <!-- <el-button @click="setImage()">拍照</el-button> -->
+            <el-button @click="setImage()">拍照</el-button>
           </div>
         </el-card>
       </el-col>
       <el-col :span="12"
         ><el-card>
-          <video
+          <!-- <video
             id="videoCamera"
             :width="videoWidth"
             :height="videoHeight"
@@ -140,18 +140,15 @@
           <div class="button">
             <el-button @click="getCompetence()">出库打开</el-button>
             <el-button @click="stopNavigator()">出库关闭</el-button>
-            <!-- <el-button @click="setImage()">拍照</el-button> -->
+            <el-button @click="setImage()">拍照</el-button>
+          </div> -->
+          <div v-if="imgSrc" class="img_bg_camera">
+            <p>效果预览</p>
+            <img :src="imgSrc" alt class="tx_img" />
           </div>
         </el-card>
       </el-col>
     </el-row>
-
-    <div class="camera_outer">
-      <div v-if="imgSrc" class="img_bg_camera">
-        <p>效果预览</p>
-        <img :src="imgSrc" alt class="tx_img" />
-      </div>
-    </div>
   </div>
 </template>
 
@@ -175,10 +172,10 @@ export default {
     };
   },
   mounted() {
-    this.initChartLine();
-    this.initChartBar();
-    this.initChartPie();
-    this.initChartScatter();
+    // this.initChartLine();
+    // this.initChartBar();
+    // this.initChartPie();
+    // this.initChartScatter();
   },
   activated() {
     // 由于给echart添加了resize事件, 在组件激活时需要重新resize绘画一次, 否则出现空白bug
@@ -199,10 +196,35 @@ export default {
     userName: {
       get() {
         return this.$store.state.user.name;
-      },
-    },
+      }
+    }
   },
   methods: {
+    // 车牌识别测试
+      licenseRecognition () {
+        this.$refs['dataForm'].validate((valid) => {
+          if (valid) {
+            this.$http({
+              url: this.$http.adornUrl('/sys/login'),
+              method: 'post',
+              data: this.$http.adornData({
+                'username': this.dataForm.userName,
+                'password': this.dataForm.password,
+                'uuid': this.dataForm.uuid,
+                'captcha': this.dataForm.captcha
+              })
+            }).then(({data}) => {
+              if (data && data.code === 0) {
+                this.$cookie.set('token', data.token)
+                this.$router.replace({ name: 'home' })
+              } else {
+                this.getCaptcha()
+                this.$message.error(data.msg)
+              }
+            })
+          }
+        })
+      },
     getCompetence() {
       var _this = this;
       _this.thisCancas = document.getElementById("canvasCamera");
@@ -277,23 +299,45 @@ export default {
       // 获取图片base64链接
       var image = this.thisCancas.toDataURL("image/png");
       _this.imgSrc = image; //赋值并预览图片
+
+      const imageUrl = this.dataURLtoFile(image, '车牌号')
+      console.log(imageUrl);
+      // console.log(image);
+
+      this.$http({
+            url: this.$http.adornUrl('/car/manage/recognition'),
+            method: 'post',
+            params: this.$http.adornParams({
+            'imagefile': imageUrl
+            })
+          }).then(({data}) => {
+            // if (data && data.code === 0) {
+            //   this.$cookie.set('token', data.token)
+            //   this.$router.replace({ name: 'home' })
+            // } else {
+            //   this.getCaptcha()
+            //   this.$message.error(data.msg)
+            // }
+            console.log(data)
+          })
+
     },
     // 关闭摄像头
     stopNavigator() {
       this.thisVideo.srcObject.getTracks()[0].stop();
     },
-    // // base64转文件，此处没用到
-    // dataURLtoFile(dataurl, filename) {
-    //   var arr = dataurl.split(",");
-    //   var mime = arr[0].match(/:(.*?);/)[1];
-    //   var bstr = atob(arr[1]);
-    //   var n = bstr.length;
-    //   var u8arr = new Uint8Array(n);
-    //   while (n--) {
-    //     u8arr[n] = bstr.charCodeAt(n);
-    //   }
-    //   return new File([u8arr], filename, { type: mime });
-    // }
+    // base64转文件，此处没用到
+    dataURLtoFile(dataurl, filename) {
+      var arr = dataurl.split(",");
+      var mime = arr[0].match(/:(.*?);/)[1];
+      var bstr = atob(arr[1]);
+      var n = bstr.length;
+      var u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new File([u8arr], filename, { type: mime });
+    },
 
     // 折线图
     initChartLine() {
@@ -474,19 +518,19 @@ export default {
       this.chartBar = echarts.init(document.getElementById("J_chartBarBox"));
       this.chartBar.setOption(option);
       window.addEventListener("resize", () => {
-        this.chartBar.resize();
-      });
+        this.chartBar.resize()
+      })
     },
     // 饼状图
-    initChartPie() {
+    initChartPie () {
       var option = {
-        backgroundColor: "#2c343c",
+        backgroundColor: '#2c343c',
         title: {
           text: "Customized Pie",
           left: "center",
           top: 20,
           textStyle: {
-            color: "#ccc",
+            color: "#ccc"
           },
         },
         tooltip: {

@@ -1,13 +1,13 @@
 <template>
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
-      <!-- <el-form-item>
-        <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
-      </el-form-item> -->
       <el-form-item>
-        <!-- <el-button @click="getDataList()">查询</el-button> -->
-        <el-button v-if="isAuth('pms:parkinginfo:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('pms:parkinginfo:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="getDataList()">查询</el-button>
+        <el-button v-if="isAuth('pms:order:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('pms:order:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -29,46 +29,34 @@
         label="id">
       </el-table-column>
       <el-table-column
-        prop="name"
+        prop="orderId"
         header-align="center"
         align="center"
-        label="停车场名">
+        label="订单号">
       </el-table-column>
       <el-table-column
-        prop="contacts"
+        prop="money"
         header-align="center"
         align="center"
-        label="联系人">
+        label="收费金额">
       </el-table-column>
       <el-table-column
-        prop="phone"
+        prop="licencePlate"
         header-align="center"
         align="center"
-        label="停车场电话">
-      </el-table-column>
-      <el-table-column
-        prop="address"
-        header-align="center"
-        align="center"
-        label="停车场地址">
-      </el-table-column>
-      <el-table-column
-        prop="totalSpaces"
-        header-align="center"
-        align="center"
-        label="总车位">
-      </el-table-column>
-      <el-table-column
-        prop="surplusSpaces"
-        header-align="center"
-        align="center"
-        label="剩余车位">
+        label="车牌号">
       </el-table-column>
       <el-table-column
         prop="createTime"
         header-align="center"
         align="center"
-        label="创建时间">
+        label="停车时间">
+      </el-table-column>
+      <el-table-column
+        prop="expirationTime"
+        header-align="center"
+        align="center"
+        label="停车时间">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -77,8 +65,8 @@
         width="150"
         label="操作">
         <template slot-scope="scope">
-          <el-button type="warning" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-          <el-button type="danger" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
+          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
+          <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -97,7 +85,7 @@
 </template>
 
 <script>
-  import AddOrUpdate from './parkinginfo-add-or-update'
+  import AddOrUpdate from './order-add-or-update'
   export default {
     data () {
       return {
@@ -124,7 +112,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/pms/parkinginfo/list'),
+          url: this.$http.adornUrl('/pms/order/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
@@ -175,7 +163,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/pms/parkinginfo/delete'),
+            url: this.$http.adornUrl('/pms/order/delete'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {

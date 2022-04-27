@@ -4,17 +4,17 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-    <el-form-item label="用户id" prop="userId">
-      <el-input v-model="dataForm.userId" placeholder="用户id"></el-input>
+    <el-form-item label="免费时长" prop="freeTime">
+      <el-input v-model="dataForm.freeTime" placeholder="免费时长"></el-input>
     </el-form-item>
-    <el-form-item label="车牌号" prop="licencePlate">
-      <el-input v-model="dataForm.licencePlate" placeholder="车牌号"></el-input>
+    <el-form-item label="计时单位" prop="timeUnit">
+      <el-input v-model="dataForm.timeUnit" placeholder="计时单位"></el-input>
     </el-form-item>
-    <el-form-item label="停车时间" prop="time">
-      <el-input v-model="dataForm.time" placeholder="停车时间"></el-input>
+    <el-form-item label="单位费用" prop="unitCost">
+      <el-input v-model="dataForm.unitCost" placeholder="单位费用"></el-input>
     </el-form-item>
-    <el-form-item label="收费" prop="money">
-      <el-input v-model="dataForm.money" placeholder="收费"></el-input>
+    <el-form-item label="创建时间" prop="createTime">
+      <el-input v-model="dataForm.createTime" placeholder="创建时间"></el-input>
     </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -31,23 +31,23 @@
         visible: false,
         dataForm: {
           id: 0,
-          userId: '',
-          licencePlate: '',
-          time: '',
-          money: ''
+          freeTime: '',
+          timeUnit: '',
+          unitCost: '',
+          createTime: ''
         },
         dataRule: {
-          userId: [
-            { required: true, message: '用户id不能为空', trigger: 'blur' }
+          freeTime: [
+            { required: true, message: '免费时长不能为空', trigger: 'blur' }
           ],
-          licencePlate: [
-            { required: true, message: '车牌号不能为空', trigger: 'blur' }
+          timeUnit: [
+            { required: true, message: '计时单位不能为空', trigger: 'blur' }
           ],
-          time: [
-            { required: true, message: '停车时间不能为空', trigger: 'blur' }
+          unitCost: [
+            { required: true, message: '单位费用不能为空', trigger: 'blur' }
           ],
-          money: [
-            { required: true, message: '收费不能为空', trigger: 'blur' }
+          createTime: [
+            { required: true, message: '创建时间不能为空', trigger: 'blur' }
           ]
         }
       }
@@ -65,10 +65,10 @@
               params: this.$http.adornParams()
             }).then(({data}) => {
               if (data && data.code === 0) {
-                this.dataForm.userId = data.price.userId
-                this.dataForm.licencePlate = data.price.licencePlate
-                this.dataForm.time = data.price.time
-                this.dataForm.money = data.price.money
+                this.dataForm.freeTime = data.price.freeTime
+                this.dataForm.timeUnit = data.price.timeUnit
+                this.dataForm.unitCost = data.price.unitCost
+                this.dataForm.createTime = data.price.createTime
               }
             })
           }
@@ -83,10 +83,10 @@
               method: 'post',
               data: this.$http.adornData({
                 'id': this.dataForm.id || undefined,
-                'userId': this.dataForm.userId,
-                'licencePlate': this.dataForm.licencePlate,
-                'time': this.dataForm.time,
-                'money': this.dataForm.money
+                'freeTime': this.dataForm.freeTime,
+                'timeUnit': this.dataForm.timeUnit,
+                'unitCost': this.dataForm.unitCost,
+                'createTime': this.dataForm.createTime
               })
             }).then(({data}) => {
               if (data && data.code === 0) {

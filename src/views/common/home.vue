@@ -101,7 +101,7 @@
     </el-row>
 
     <el-row v-if="userName != 'admin'">
-      <el-col :span="12">
+      <el-col :span="12" :push="5">
         <el-card>
           <video
             id="videoCamera"
@@ -116,16 +116,16 @@
             :height="videoHeight"
           ></canvas>
           <br />
-          <div class="button">
-            <el-button @click="getCompetence()">入库打开</el-button>
-            <el-button @click="stopNavigator()">入库关闭</el-button>
-            <el-button @click="setImage()">拍照</el-button>
+          <div style="padding-left: 200px">
+            <el-button type="primary" @click="licenseplateRecognition()">入库</el-button>
+            <el-button type="success" @click="stopNavigator()">出库</el-button>
+            <!-- <el-button @click="setImage()">拍照</el-button> -->
           </div>
         </el-card>
       </el-col>
-      <el-col :span="12"
+      <!-- <el-col :span="12"
         ><el-card>
-          <!-- <video
+          <video
             id="videoCamera"
             :width="videoWidth"
             :height="videoHeight"
@@ -141,13 +141,13 @@
             <el-button @click="getCompetence()">出库打开</el-button>
             <el-button @click="stopNavigator()">出库关闭</el-button>
             <el-button @click="setImage()">拍照</el-button>
-          </div> -->
+          </div>
           <div v-if="imgSrc" class="img_bg_camera">
             <p>效果预览</p>
             <img :src="imgSrc" alt class="tx_img" />
           </div>
         </el-card>
-      </el-col>
+      </el-col> -->
     </el-row>
   </div>
 </template>
@@ -155,6 +155,7 @@
 <script>
 // import walden from '@/assets/js/walden'
 import echarts from "echarts";
+import axios from "axios";
 export default {
   data() {
     return {
@@ -162,7 +163,7 @@ export default {
       chartBar: null,
       chartPie: null,
       chartScatter: null,
-      videoWidth: 450,
+      videoWidth: 520,
       videoHeight: 350,
       imgSrc: "",
       thisCancas: null,
@@ -176,6 +177,10 @@ export default {
     // this.initChartBar();
     // this.initChartPie();
     // this.initChartScatter();
+    if (this.$store.state.user.name != 'admin') {
+      // 第一步打开摄像头
+      this.getCompetence(); //调用摄像头
+    }
   },
   activated() {
     // 由于给echart添加了resize事件, 在组件激活时需要重新resize绘画一次, 否则出现空白bug
@@ -196,35 +201,41 @@ export default {
     userName: {
       get() {
         return this.$store.state.user.name;
-      }
-    }
+      },
+    },
   },
   methods: {
-    // 车牌识别测试
-      licenseRecognition () {
-        this.$refs['dataForm'].validate((valid) => {
-          if (valid) {
-            this.$http({
-              url: this.$http.adornUrl('/sys/login'),
-              method: 'post',
-              data: this.$http.adornData({
-                'username': this.dataForm.userName,
-                'password': this.dataForm.password,
-                'uuid': this.dataForm.uuid,
-                'captcha': this.dataForm.captcha
-              })
-            }).then(({data}) => {
-              if (data && data.code === 0) {
-                this.$cookie.set('token', data.token)
-                this.$router.replace({ name: 'home' })
-              } else {
-                this.getCaptcha()
-                this.$message.error(data.msg)
-              }
-            })
+
+    licenseplateRecognition(){
+      // 生成图表
+      this.setImage();
+      // 生成文件表单上传
+      let formData = new FormData();
+      formData.append("file", this.dataURLtoFile(this.imgSrc, "licenseplate.png"));
+
+      // 使用封装的axios是统一的header，不能上传文件类的内容，所以在这直接使用axios原生的
+      // url需要使用本项目的加token和项目前缀
+      axios
+        .post(
+          this.$http.adornUrl(
+            `/car/manage/recognition?token=${this.$cookie.get("token")}`
+          ),
+          formData
+        )
+        .then((res) => {
+          // console.log(res);
+          if (res.data.code == "0") {
+            // 图片文件传至后台 == 获取到该图片的url路径
+            this.postVideoImg = res.data.imagePath;
+            //获得图片的url后，需要做什么
+            //做的事情......
           }
         })
-      },
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+
     getCompetence() {
       var _this = this;
       _this.thisCancas = document.getElementById("canvasCamera");
@@ -299,28 +310,6 @@ export default {
       // 获取图片base64链接
       var image = this.thisCancas.toDataURL("image/png");
       _this.imgSrc = image; //赋值并预览图片
-
-      const imageUrl = this.dataURLtoFile(image, '车牌号')
-      console.log(imageUrl);
-      // console.log(image);
-
-      this.$http({
-            url: this.$http.adornUrl('/car/manage/recognition'),
-            method: 'post',
-            params: this.$http.adornParams({
-            'imagefile': imageUrl
-            })
-          }).then(({data}) => {
-            // if (data && data.code === 0) {
-            //   this.$cookie.set('token', data.token)
-            //   this.$router.replace({ name: 'home' })
-            // } else {
-            //   this.getCaptcha()
-            //   this.$message.error(data.msg)
-            // }
-            console.log(data)
-          })
-
     },
     // 关闭摄像头
     stopNavigator() {
@@ -338,6 +327,7 @@ export default {
       }
       return new File([u8arr], filename, { type: mime });
     },
+
 
     // 折线图
     initChartLine() {
@@ -518,19 +508,19 @@ export default {
       this.chartBar = echarts.init(document.getElementById("J_chartBarBox"));
       this.chartBar.setOption(option);
       window.addEventListener("resize", () => {
-        this.chartBar.resize()
-      })
+        this.chartBar.resize();
+      });
     },
     // 饼状图
-    initChartPie () {
+    initChartPie() {
       var option = {
-        backgroundColor: '#2c343c',
+        backgroundColor: "#2c343c",
         title: {
           text: "Customized Pie",
           left: "center",
           top: 20,
           textStyle: {
-            color: "#ccc"
+            color: "#ccc",
           },
         },
         tooltip: {

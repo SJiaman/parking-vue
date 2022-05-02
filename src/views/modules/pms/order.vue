@@ -35,7 +35,7 @@
         label="订单号">
       </el-table-column>
       <el-table-column
-        prop="money"
+        prop="orderCost"
         header-align="center"
         align="center"
         label="收费金额">

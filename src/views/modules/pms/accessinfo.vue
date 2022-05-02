@@ -29,10 +29,10 @@
         label="id">
       </el-table-column>
       <el-table-column
-        prop="userId"
+        prop="carType"
         header-align="center"
         align="center"
-        label="用户id">
+        label="类型">
       </el-table-column>
       <el-table-column
         prop="licencePlate"
@@ -51,6 +51,12 @@
         header-align="center"
         align="center"
         label="出去时间">
+      </el-table-column>
+       <el-table-column
+        prop="cost"
+        header-align="center"
+        align="center"
+        label="费用">
       </el-table-column>
     </el-table>
     <el-pagination

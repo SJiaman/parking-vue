@@ -22,17 +22,42 @@
         align="center"
         width="50">
       </el-table-column>
-      <el-table-column
+       <el-table-column
         prop="id"
         header-align="center"
         align="center"
+        width="80"
         label="用户id">
       </el-table-column>
       <el-table-column
-        prop="userId"
+        prop="name"
         header-align="center"
         align="center"
-        label="角色id">
+        label="用户名">
+      </el-table-column>
+      <el-table-column
+        prop="gender"
+        header-align="center"
+        align="center"
+        label="性别">
+      </el-table-column>
+      <el-table-column
+        prop="phone"
+        header-align="center"
+        align="center"
+        label="电话号码">
+      </el-table-column>
+      <el-table-column
+        prop="address"
+        header-align="center"
+        align="center"
+        label="住址">
+      </el-table-column>
+      <el-table-column
+        prop="licencePlate"
+        header-align="center"
+        align="center"
+        label="车牌号">
       </el-table-column>
       <el-table-column
         prop="createTime"

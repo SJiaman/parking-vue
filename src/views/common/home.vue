@@ -100,8 +100,124 @@
       </el-col>
     </el-row>
 
-    <el-row v-if="userName != 'admin'">
-      <el-col :span="12" :push="5">
+    <!-- <el-row :gutter="40" class="panel-group">
+      <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+        <div class="card-panel">
+          <div class="card-panel-icon-wrapper icon-people">
+            <svg-icon icon-class="peoples" class-name="card-panel-icon" />
+          </div>
+          <div class="card-panel-description">
+            <div class="card-panel-text">New Visits</div>
+            <count-to
+              :start-val="0"
+              :end-val="102400"
+              :duration="2600"
+              class="card-panel-num"
+            />
+          </div>
+        </div>
+      </el-col>
+      <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+        <div class="card-panel">
+          <div class="card-panel-icon-wrapper icon-message">
+            <svg-icon icon-class="message" class-name="card-panel-icon" />
+          </div>
+          <div class="card-panel-description">
+            <div class="card-panel-text">Messages</div>
+            <count-to
+              :start-val="0"
+              :end-val="81212"
+              :duration="3000"
+              class="card-panel-num"
+            />
+          </div>
+        </div>
+      </el-col>
+      <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+        <div class="card-panel">
+          <div class="card-panel-icon-wrapper icon-money">
+            <svg-icon icon-class="money" class-name="card-panel-icon" />
+          </div>
+          <div class="card-panel-description">
+            <div class="card-panel-text">Purchases</div>
+            <count-to
+              :start-val="0"
+              :end-val="9280"
+              :duration="3200"
+              class="card-panel-num"
+            />
+          </div>
+        </div>
+      </el-col>
+      <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+        <div class="card-panel">
+          <div class="card-panel-icon-wrapper icon-shopping">
+            <svg-icon icon-class="shopping" class-name="card-panel-icon" />
+          </div>
+          <div class="card-panel-description">
+            <div class="card-panel-text">Shoppings</div>
+            <count-to
+              :start-val="0"
+              :end-val="13600"
+              :duration="3600"
+              class="card-panel-num"
+            />
+          </div>
+        </div>
+      </el-col>
+    </el-row> -->
+
+    <el-row :gutter="50" type="flex" justify="center">
+      <el-col :span="6">
+        <el-card class="box-card">
+          <!-- <div slot="header" class="clearfix">
+            <span>会员总数</span>
+            <el-tag
+              style="float: right"
+              type="success"
+              size="small"
+              plain
+              disabled
+              >全平台
+            </el-tag>
+          </div> -->
+          <div>
+            <span class="card-panel-num">2</span>
+            <div class="line"></div>
+            <div>
+              <span>今日订单数</span>
+              <span style="float: right">q单</span>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :span="6">
+        <el-card class="box-card">
+          <!-- <div slot="header" class="clearfix"> -->
+          <!-- <span>会员总数</span>
+            <el-tag
+              style="float: right"
+              type="success"
+              size="small"
+              plain
+              disabled
+              >全平台
+            </el-tag>
+          </div> -->
+          <div>
+            <span class="card-panel-num">2</span>
+            <div class="line"></div>
+            <div>
+              <span>今日订单数</span>
+              <span style="float: right">q单</span>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
+
+    <el-row v-if="userName != 'admin'" type="flex" justify="center">
+      <el-col :span="12">
         <el-card>
           <video
             id="videoCamera"
@@ -117,10 +233,13 @@
           ></canvas>
           <br />
           <div style="padding-left: 200px">
-            <el-button type="primary" @click="licenseplateRecognition()">入库</el-button>
+            <el-button type="primary" @click="failAlert()"
+              >入库</el-button
+            >
             <el-button type="success" @click="stopNavigator()">出库</el-button>
             <!-- <el-button @click="setImage()">拍照</el-button> -->
           </div>
+          <!-- <span>{{parkInfo.name}}</span> -->
         </el-card>
       </el-col>
       <!-- <el-col :span="12"
@@ -163,13 +282,15 @@ export default {
       chartBar: null,
       chartPie: null,
       chartScatter: null,
-      videoWidth: 520,
+      videoWidth: 530,
       videoHeight: 350,
       imgSrc: "",
       thisCancas: null,
       thisContext: null,
       thisVideo: null,
       openVideo: false,
+      recognitionMsg: "贵AD7893,会员车",
+      parkInfo: null,
     };
   },
   mounted() {
@@ -177,7 +298,7 @@ export default {
     // this.initChartBar();
     // this.initChartPie();
     // this.initChartScatter();
-    if (this.$store.state.user.name != 'admin') {
+    if (this.$store.state.user.name != "admin") {
       // 第一步打开摄像头
       this.getCompetence(); //调用摄像头
     }
@@ -196,6 +317,7 @@ export default {
     if (this.chartScatter) {
       this.chartScatter.resize();
     }
+    this.parkingInfo();
   },
   computed: {
     userName: {
@@ -205,20 +327,58 @@ export default {
     },
   },
   methods: {
+    failAlert() {
+      this.$alert(recognitionMsg, "入库失败", {
+        confirmButtonText: "确定",
+        callback: (action) => {
+          this.$message({
+            type: "error",
+            message: "入库失败",
+          });
+        },
+      });
+    },
 
-    licenseplateRecognition(){
+    successAlert(msg) {
+      this.$message({
+        showClose: true,
+        message: `欢迎${msg}入库`,
+        type: "success",
+      });
+    },
+
+    parkingInfo() {
+      this.dataListLoading = true;
+      this.$http({
+        url: this.$http.adornUrl("/pms/parkinginfo/info"),
+        method: "get",
+      }).then(({ data }) => {
+        if (data && data.code === 0) {
+          console.log(data);
+          this.parkInfo = data.parkingInfo;
+        } else {
+          console.log(data);
+        }
+      });
+    },
+
+    licenseplateRecognition() {
+      var _this = this;
       // 生成图表
       this.setImage();
       // 生成文件表单上传
       let formData = new FormData();
-      formData.append("file", this.dataURLtoFile(this.imgSrc, "licenseplate.png"));
+      formData.append(
+        "file",
+        this.dataURLtoFile(this.imgSrc, "licenseplate.png")
+      );
 
       // 使用封装的axios是统一的header，不能上传文件类的内容，所以在这直接使用axios原生的
       // url需要使用本项目的加token和项目前缀
       axios
         .post(
           this.$http.adornUrl(
-            `/car/manage/recognition?token=${this.$cookie.get("token")}`
+            `/pms/access/entry?token=${this.$cookie.get("token")}`
           ),
           formData
         )
@@ -227,11 +387,21 @@ export default {
           if (res.data.code == "0") {
             // 图片文件传至后台 == 获取到该图片的url路径
             this.postVideoImg = res.data.imagePath;
+            console.log(res.data)
+            _this.successAlert(res.data.licensePlate);
+            var utterThis = new window.SpeechSynthesisUtterance(`尊贵的${res.data.licensePlate}车主，欢迎入库！`);
+            utterThis.rate = 0.5;
+            window.speechSynthesis.speak(utterThis);
+
             //获得图片的url后，需要做什么
             //做的事情......
           }
         })
         .catch((error) => {
+          this.failAlert();
+           var utterThis = new window.SpeechSynthesisUtterance(error.msg);
+            utterThis.rate = 0.5;
+            window.speechSynthesis.speak(utterThis);
           console.log(error);
         });
     },
@@ -327,7 +497,6 @@ export default {
       }
       return new File([u8arr], filename, { type: mime });
     },
-
 
     // 折线图
     initChartLine() {
@@ -747,92 +916,151 @@ export default {
   }
 }
 
-// .panel-group {
-//   margin-top: 18px;
+.card-panel-num {
+  font-size: 28px;
+}
+.line {
+  margin-top: 18px;
+  margin-bottom: 20px;
+  width: 600px;
+  height: 1px;
+  // background-color: rgba(235, 238, 245);
+  text-align: center;
+  font-size: 16px;
+  // color: rgba(235, 238, 245);
+}
+.menu {
+  margin-top: 20px;
+}
+.menu-item {
+  margin-left: 24px;
+}
+.menu-title {
+  font-size: 10px;
+}
 
-//   .card-panel-col {
-//     margin-bottom: 32px;
-//   }
+.statistics {
+  margin-top: 20px;
+}
+/* .statistics-title{
+  position: relative;
+  bottom:  20px;
+  left: 30px;
+} */
 
-//   .card-panel {
-//     height: 108px;
-//     cursor: pointer;
-//     font-size: 12px;
-//     position: relative;
-//     overflow: hidden;
-//     color: #666;
-//     background: #fff;
-//     box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
-//     border-color: rgba(0, 0, 0, .05);
+/* .menu-header{
+  display: flex;
+  justify-items: flex-start;
+} */
+.chart-box {
+  min-height: 400px;
+}
 
-//     &:hover {
-//       .card-panel-icon-wrapper {
-//         color: #fff;
-//       }
+.panel-group {
+  margin-top: 18px;
 
-//       .icon-people {
-//         background: #40c9c6;
-//       }
+  .card-panel-col {
+    margin-bottom: 32px;
+  }
 
-//       .icon-message {
-//         background: #36a3f7;
-//       }
+  .card-panel {
+    height: 108px;
+    cursor: pointer;
+    font-size: 12px;
+    position: relative;
+    overflow: hidden;
+    color: #666;
+    background: #fff;
+    box-shadow: 4px 4px 40px rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.05);
 
-//       .icon-money {
-//         background: #f4516c;
-//       }
+    &:hover {
+      .card-panel-icon-wrapper {
+        color: #fff;
+      }
 
-//       .icon-shopping {
-//         background: #34bfa3
-//       }
-//     }
+      .icon-people {
+        background: #40c9c6;
+      }
 
-//     .icon-people {
-//       color: #40c9c6;
-//     }
+      .icon-message {
+        background: #36a3f7;
+      }
 
-//     .icon-message {
-//       color: #36a3f7;
-//     }
+      .icon-money {
+        background: #f4516c;
+      }
 
-//     .icon-money {
-//       color: #f4516c;
-//     }
+      .icon-shopping {
+        background: #34bfa3;
+      }
+    }
 
-//     .icon-shopping {
-//       color: #34bfa3
-//     }
+    .icon-people {
+      color: #40c9c6;
+    }
 
-//     .card-panel-icon-wrapper {
-//       float: left;
-//       margin: 14px 0 0 14px;
-//       padding: 16px;
-//       transition: all 0.38s ease-out;
-//       border-radius: 6px;
-//     }
+    .icon-message {
+      color: #36a3f7;
+    }
 
-//     .card-panel-icon {
-//       float: left;
-//       font-size: 48px;
-//     }
+    .icon-money {
+      color: #f4516c;
+    }
 
-//     .card-panel-description {
-//       float: right;
-//       font-weight: bold;
-//       margin: 26px;
-//       margin-left: 0px;
+    .icon-shopping {
+      color: #34bfa3;
+    }
 
-//       .card-panel-text {
-//         line-height: 18px;
-//         color: rgba(0, 0, 0, 0.45);
-//         font-size: 16px;
-//         margin-bottom: 12px;
-//       }
+    .card-panel-icon-wrapper {
+      float: left;
+      margin: 14px 0 0 14px;
+      padding: 16px;
+      transition: all 0.38s ease-out;
+      border-radius: 6px;
+    }
 
-//       .card-panel-num {
-//         font-size: 20px;
-//       }
-//     }
-//   }
-// }
+    .card-panel-icon {
+      float: left;
+      font-size: 48px;
+    }
+
+    .card-panel-description {
+      float: right;
+      font-weight: bold;
+      margin: 26px;
+      margin-left: 0px;
+
+      .card-panel-text {
+        line-height: 18px;
+        color: rgba(0, 0, 0, 0.45);
+        font-size: 16px;
+        margin-bottom: 12px;
+      }
+
+      .card-panel-num {
+        font-size: 20px;
+      }
+    }
+  }
+}
+
+@media (max-width: 550px) {
+  .card-panel-description {
+    display: none;
+  }
+
+  .card-panel-icon-wrapper {
+    float: none !important;
+    width: 100%;
+    height: 100%;
+    margin: 0 !important;
+
+    .svg-icon {
+      display: block;
+      margin: 14px auto !important;
+      float: none !important;
+    }
+  }
+}
 </style>

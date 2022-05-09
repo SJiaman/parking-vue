@@ -35,6 +35,12 @@
         label="车位编号">
       </el-table-column>
       <el-table-column
+        prop="member"
+        header-align="center"
+        align="center"
+        label="车主">
+      </el-table-column>
+      <el-table-column
         prop="section"
         header-align="center"
         align="center"
@@ -45,9 +51,10 @@
         header-align="center"
         align="center"
         label="车位状态">
+       <template slot-scope="scope">{{scope.row.state == 0 ? '在售': '已售'}}</template> 
       </el-table-column>
       <el-table-column
-        prop="typeId"
+        prop="type"
         header-align="center"
         align="center"
         label="车位类型">

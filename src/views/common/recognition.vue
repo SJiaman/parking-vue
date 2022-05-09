@@ -1,25 +1,31 @@
 <template>
   <div>
-    <video
-      id="videoCamera"
-      :width="videoWidth"
-      :height="videoHeight"
-      autoplay
-    ></video>
-    <canvas
-      style="display: none"
-      id="canvasCamera"
-      :width="videoWidth"
-      :height="videoHeight"
-    ></canvas>
-
-    <button plain @click="setImage()">手动拍照</button>
-    <p class="fail_tips">拍照，请正脸面向摄像头</p>
-    // 给外面盒子设置宽高，可以限制拍照图片的大小位置范围
-    <div class="result_img">
-      <img :src="imgSrc" alt class="tx_img" width="100%" />
-    </div>
-    <p class="res_tips">效果展示</p>
+    <el-row>
+      <el-col :span="12" :push="5">
+        <el-card>
+          <video
+            id="videoCamera"
+            :width="videoWidth"
+            :height="videoHeight"
+            autoplay
+          ></video>
+          <canvas
+            style="display: none"
+            id="canvasCamera"
+            :width="videoWidth"
+            :height="videoHeight"
+          ></canvas>
+          <br />
+          <div style="padding-left: 200px">
+            <el-button type="primary" @click="licenseplateRecognition()"
+              >入库</el-button
+            >
+            <el-button type="success" @click="stopNavigator()">出库</el-button>
+            <!-- <el-button @click="setImage()">拍照</el-button> -->
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -28,31 +34,59 @@ import axios from "axios";
 export default {
   data() {
     return {
-      // 视频调用相关数据开始
-      videoWidth: 245,
-      videoHeight: 326,
+      videoWidth: 520,
+      videoHeight: 350,
       imgSrc: "",
       thisCancas: null,
       thisContext: null,
       thisVideo: null,
       openVideo: false,
-      //视频调用相关数据结束
-      postVideoImg: "", // 图片上传后获取的url链接
+      recognitionMsg: "贵AD7893,会员车",
     };
   },
   mounted() {
-    // 第一步打开摄像头
-    this.getCompetence(); //调用摄像头
+    if (this.$store.state.user.name != "admin") {
+      // 第一步打开摄像头
+      this.getCompetence(); //调用摄像头
+    }
+  },
+  computed: {
+    userName: {
+      get() {
+        return this.$store.state.user.name;
+      },
+    },
   },
   methods: {
-    // 第三步、拍照图转换file格式上传，
-    // 第四步、获取图片url链接
-    postImg() {
-      let formData = new FormData();
-      formData.append("file", this.base64ToFile(this.imgSrc, "LicensePlate.png"));
-      // formData.append("flag", "videoImg")// 额外参数
+    failAlert() {
+      this.$alert(recognitionMsg, "入库失败", {
+        confirmButtonText: "确定",
+        callback: (action) => {
+          this.$message({
+            type: "error",
+            message: "入库失败",
+          });
+        },
+      });
+    },
 
-      console.log(formData.get("file"));
+    successAlert() {
+      this.$message({
+        showClose: true,
+        message: `欢迎${this.recognitionMsg}入库`,
+        type: "success",
+      });
+    },
+
+    licenseplateRecognition() {
+      // 生成图表
+      this.setImage();
+      // 生成文件表单上传
+      let formData = new FormData();
+      formData.append(
+        "file",
+        this.dataURLtoFile(this.imgSrc, "licenseplate.png")
+      );
 
       // 使用封装的axios是统一的header，不能上传文件类的内容，所以在这直接使用axios原生的
       // url需要使用本项目的加token和项目前缀
@@ -65,38 +99,21 @@ export default {
         )
         .then((res) => {
           // console.log(res);
-          if (res.data.code == "00") {
+          if (res.data.code == "0") {
             // 图片文件传至后台 == 获取到该图片的url路径
             this.postVideoImg = res.data.imagePath;
+            this.successAlert();
+
             //获得图片的url后，需要做什么
             //做的事情......
           }
         })
         .catch((error) => {
+          this.failAlert();
           console.log(error);
         });
     },
 
-    //  this.$http({
-    //     url: this.$http.adornUrl('/car/manage/upload'),
-    //     method: 'post',
-    //     data: this.$http.adornData(formData, false),
-    //     // params: this.$http.adornParams({
-    //     // 'file': this.base64ToFile(this.imgSrc,'png')
-    //     // })
-    //   }).then(({data}) => {
-    //     // if (data && data.code === 0) {
-    //     //   this.$cookie.set('token', data.token)
-    //     //   this.$router.replace({ name: 'home' })
-    //     // } else {
-    //     //   this.getCaptcha()
-    //     //   this.$message.error(data.msg)
-    //     // }
-    //     console.log(data)
-    //   })
-    // },
-
-    // 调用权限（打开摄像头功能）
     getCompetence() {
       var _this = this;
       _this.thisCancas = document.getElementById("canvasCamera");
@@ -157,46 +174,56 @@ export default {
           console.log(err);
         });
     },
-    //  第二步、绘制图片（拍照功能）
+    //  绘制图片（拍照功能）
     setImage() {
       var _this = this;
       // canvas画图
-      _this.thisContext.drawImage(_this.thisVideo, 0, 0);
+      _this.thisContext.drawImage(
+        _this.thisVideo,
+        0,
+        0,
+        _this.videoWidth,
+        _this.videoHeight
+      );
       // 获取图片base64链接
       var image = this.thisCancas.toDataURL("image/png");
       _this.imgSrc = image; //赋值并预览图片
-
-      //这里是调用上传图片接口=====
-      this.postImg(); // 绘制完图片调用图片上传接口
     },
     // 关闭摄像头
     stopNavigator() {
       this.thisVideo.srcObject.getTracks()[0].stop();
     },
-
-    // base64 转为 file
-    base64ToFile(urlData, fileName) {
-      let arr = urlData.split(",");
-      let mime = arr[0].match(/:(.*?);/)[1];
-      let bytes = atob(arr[1]); // 解码base64
-      let n = bytes.length;
-      let ia = new Uint8Array(n);
+    // base64转文件，此处没用到
+    dataURLtoFile(dataurl, filename) {
+      var arr = dataurl.split(",");
+      var mime = arr[0].match(/:(.*?);/)[1];
+      var bstr = atob(arr[1]);
+      var n = bstr.length;
+      var u8arr = new Uint8Array(n);
       while (n--) {
-        ia[n] = bytes.charCodeAt(n);
+        u8arr[n] = bstr.charCodeAt(n);
       }
-      return new File([ia], fileName, { type: mime });
+      return new File([u8arr], filename, { type: mime });
     },
-  },
-  destroyed: function () {
-    // 离开当前页面
-    this.stopNavigator(); // 关闭摄像头
   },
 };
 </script>
-<style>
-.result_img {
-  width: 146px;
-  height: 195px;
-  background: #d8d8d8;
+
+<style lang="scss" scope>
+.mod-demo-echarts {
+  > .el-alert {
+    margin-bottom: 10px;
+  }
+  > .el-row {
+    margin-top: -10px;
+    margin-bottom: -10px;
+    .el-col {
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+  }
+  .chart-box {
+    min-height: 400px;
+  }
 }
 </style>

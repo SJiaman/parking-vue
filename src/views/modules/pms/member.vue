@@ -36,10 +36,13 @@
         label="用户名">
       </el-table-column>
       <el-table-column
-        prop="gender"
+        prop="gender" 
         header-align="center"
         align="center"
         label="性别">
+      <template slot-scope="scope">
+        {{scope.row.gender== 0 ? '男' : '女'}}
+      </template>
       </el-table-column>
       <el-table-column
         prop="phone"
@@ -54,19 +57,19 @@
         label="住址">
       </el-table-column>
       <el-table-column
-        prop="licencePlate"
+        prop="spaceNumber"
         header-align="center"
         align="center"
-        label="车牌号">
+        label="车位号">
       </el-table-column>
       <el-table-column
         prop="createTime"
         header-align="center"
         align="center"
-        label="注册时间">
+        label="购买时间">
       </el-table-column>
       <el-table-column
-        prop="expirationTime"
+        prop="expireTime"
         header-align="center"
         align="center"
         label="到期时间">
@@ -78,8 +81,8 @@
         width="150"
         label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-          <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
+          <el-button type="warning" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
+          <el-button type="danger" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

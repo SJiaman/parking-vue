@@ -35,7 +35,7 @@
         label="类型">
       </el-table-column>
       <el-table-column
-        prop="licencePlate"
+        prop="licensePlate"
         header-align="center"
         align="center"
         label="车牌号">
@@ -101,7 +101,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/pms/accessinfo/list'),
+          url: this.$http.adornUrl('/pms/access/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,

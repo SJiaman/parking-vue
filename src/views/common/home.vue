@@ -233,10 +233,10 @@
           ></canvas>
           <br />
           <div style="padding-left: 200px">
-            <el-button type="primary" @click="failAlert()"
+            <el-button type="primary" @click="entryParking()"
               >入库</el-button
             >
-            <el-button type="success" @click="stopNavigator()">出库</el-button>
+            <el-button type="success" @click="outParking()">出库</el-button>
             <!-- <el-button @click="setImage()">拍照</el-button> -->
           </div>
           <!-- <span>{{parkInfo.name}}</span> -->
@@ -328,7 +328,7 @@ export default {
   },
   methods: {
     failAlert() {
-      this.$alert(recognitionMsg, "入库失败", {
+      this.$alert("入库失败", {
         confirmButtonText: "确定",
         callback: (action) => {
           this.$message({
@@ -339,10 +339,10 @@ export default {
       });
     },
 
-    successAlert(msg) {
+    msgAlert(msg) {
       this.$message({
         showClose: true,
-        message: `欢迎${msg}入库`,
+        message: msg,
         type: "success",
       });
     },
@@ -362,7 +362,7 @@ export default {
       });
     },
 
-    licenseplateRecognition() {
+    entryParking() {
       var _this = this;
       // 生成图表
       this.setImage();
@@ -385,11 +385,13 @@ export default {
         .then((res) => {
           // console.log(res);
           if (res.data.code == "0") {
-            // 图片文件传至后台 == 获取到该图片的url路径
-            this.postVideoImg = res.data.imagePath;
-            console.log(res.data)
-            _this.successAlert(res.data.licensePlate);
-            var utterThis = new window.SpeechSynthesisUtterance(`尊贵的${res.data.licensePlate}车主，欢迎入库！`);
+            // // 图片文件传至后台 == 获取到该图片的url路径
+            // this.postVideoImg = res.data.imagePath;
+            console.log(res.data);
+            _this.successAlert(res.data.entryMsg);
+            var utterThis = new window.SpeechSynthesisUtterance(
+              res.data.entryMsg
+            );
             utterThis.rate = 0.5;
             window.speechSynthesis.speak(utterThis);
 
@@ -399,10 +401,64 @@ export default {
         })
         .catch((error) => {
           this.failAlert();
-           var utterThis = new window.SpeechSynthesisUtterance(error.msg);
+          //  var utterThis = new window.SpeechSynthesisUtterance(error.msg);
+          //   utterThis.rate = 0.5;
+          //   window.speechSynthesis.speak(utterThis);
+          // console.log(error);
+        });
+    },
+
+    outParking() {
+      var _this = this;
+      // 生成图表
+      this.setImage();
+      // 生成文件表单上传
+      let formData = new FormData();
+      formData.append(
+        "file",
+        this.dataURLtoFile(this.imgSrc, "licenseplate.png")
+      );
+
+      // 使用封装的axios是统一的header，不能上传文件类的内容，所以在这直接使用axios原生的
+      // url需要使用本项目的加token和项目前缀
+      axios
+        .post(
+          this.$http.adornUrl(
+            `/pms/access/out?token=${this.$cookie.get("token")}`
+          ),
+          formData
+        )
+        .then((res) => {
+          // console.log(res);
+          if (res.data.code == "0") {
+            // 图片文件传至后台 == 获取到该图片的url路径
+            // this.postVideoImg = res.data.imagePath;
+            console.log(res.data);
+            _this.successAlert(res.data.outMsg);
+            if (res.data.carType == "0") {
+              this.$http({
+                url: this.$http.adornUrl("/pms/ali-pay/trade/page/pay/"),
+                method: "post",
+                data: this.$http.adornData(res.data.accessInfoEntity, false),
+              }).then((response) => {
+                //将支付宝返回的表单字符串写在浏览器中，表单会自动触发submit提交
+                document.write(response.data.formStr);
+              });
+            }
+            console.log(res.data.outMsg);
+            var utterThis = new window.SpeechSynthesisUtterance(res.data.outMsg);
             utterThis.rate = 0.5;
             window.speechSynthesis.speak(utterThis);
-          console.log(error);
+            //获得图片的url后，需要做什么
+            //做的事情......
+          } 
+        })
+        .catch((error) => {
+          this.failAlert();
+          //  var utterThis = new window.SpeechSynthesisUtterance(error.msg);
+          //   utterThis.rate = 0.5;
+          //   window.speechSynthesis.speak(utterThis);
+          // console.log(error);
         });
     },
 

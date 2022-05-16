@@ -14,14 +14,13 @@
       :data="dataList"
       border
       v-loading="dataListLoading"
-      @selection-change="selectionChangeHandle"
-      style="width: 100%;">
-      <el-table-column
+      style="width: 100%;" :header-cell-style="{background:'#F1EDD4'}">
+      <!-- <el-table-column
         type="selection"
         header-align="center"
         align="center"
         width="50">
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column
         prop="id"
         header-align="center"
@@ -29,7 +28,7 @@
         label="id">
       </el-table-column>
       <el-table-column
-        prop="orderId"
+        prop="orderNumber"
         header-align="center"
         align="center"
         label="订单号">
@@ -41,7 +40,7 @@
         label="收费金额">
       </el-table-column>
       <el-table-column
-        prop="licencePlate"
+        prop="licensePlate"
         header-align="center"
         align="center"
         label="车牌号">
@@ -50,10 +49,10 @@
         prop="createTime"
         header-align="center"
         align="center"
-        label="停车时间">
+        label="创建时间">
       </el-table-column>
       <el-table-column
-        prop="expirationTime"
+        prop="parkTime"
         header-align="center"
         align="center"
         label="停车时间">

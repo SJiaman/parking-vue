@@ -2,10 +2,10 @@
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
+        <el-input v-model="dataForm.key" placeholder="输入车牌号查询" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button type="primary" @click="getDataList()">查询</el-button>
         <!-- <el-button v-if="isAuth('pms:accessinfo:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button> -->
         <!-- <el-button v-if="isAuth('pms:accessinfo:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button> -->
       </el-form-item>
@@ -14,25 +14,26 @@
       :data="dataList"
       border
       v-loading="dataListLoading"
-      @selection-change="selectionChangeHandle"
-      style="width: 100%;">
-      <el-table-column
+      style="width: 100%;" :header-cell-style="{background:'#F1EDD4'}">
+      <!-- <el-table-column
         type="selection"
         header-align="center"
         align="center"
         width="50">
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column
         prop="id"
         header-align="center"
         align="center"
-        label="id">
+        label="编号"
+        width="50px">
       </el-table-column>
       <el-table-column
         prop="carType"
         header-align="center"
         align="center"
         label="类型">
+      <template slot-scope="scope">{{scope.row.carType == 0 ? '临时车': '会员车'}}</template> 
       </el-table-column>
       <el-table-column
         prop="licensePlate"
@@ -53,10 +54,16 @@
         label="出去时间">
       </el-table-column>
        <el-table-column
-        prop="cost"
+        prop="parkTime"
         header-align="center"
         align="center"
-        label="费用">
+        label="停车时间">
+      </el-table-column>
+       <el-table-column
+        prop="remark"
+        header-align="center"
+        align="center"
+        label="备注">
       </el-table-column>
     </el-table>
     <el-pagination

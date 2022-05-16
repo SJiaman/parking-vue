@@ -182,11 +182,10 @@
             </el-tag>
           </div> -->
           <div>
-            <span class="card-panel-num">2</span>
+            <span class="card-panel-num">500</span>
             <div class="line"></div>
             <div>
-              <span>今日订单数</span>
-              <span style="float: right">q单</span>
+              <span>总车位数</span>
             </div>
           </div>
         </el-card>
@@ -205,11 +204,10 @@
             </el-tag>
           </div> -->
           <div>
-            <span class="card-panel-num">2</span>
+            <span class="card-panel-num">360</span>
             <div class="line"></div>
             <div>
-              <span>今日订单数</span>
-              <span style="float: right">q单</span>
+              <span>剩余车位数</span>
             </div>
           </div>
         </el-card>
@@ -236,7 +234,7 @@
             <el-button type="primary" @click="entryParking()"
               >入库</el-button
             >
-            <el-button type="success" @click="outParking()">出库</el-button>
+            <el-button type="success" @click="stopNavigator()">出库</el-button>
             <!-- <el-button @click="setImage()">拍照</el-button> -->
           </div>
           <!-- <span>{{parkInfo.name}}</span> -->

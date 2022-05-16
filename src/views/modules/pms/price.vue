@@ -1,6 +1,6 @@
 <template>
   <div class="mod-config">
-    <el-form
+    <!-- <el-form
       :inline="true"
       :model="dataForm"
       @keyup.enter.native="getDataList()"
@@ -28,10 +28,10 @@
           >批量删除</el-button
         >
       </el-form-item>
-    </el-form>
+    </el-form> -->
     <el-form ref="form" :model="form" label-width="80px">
       <el-form-item label="免费时长">
-        <el-input v-model="form.name"></el-input>
+        <el-input v-model="form.name" ></el-input>
       </el-form-item>
       <el-form-item label="计时单位（分钟）">
         <el-select v-model="form.region" placeholder="请选择活动区域">
@@ -48,14 +48,14 @@
             style="width: 100%"
           ></el-date-picker>
         </el-col>
-        <el-col class="line" :span="2">-</el-col>
-        <el-col :span="11">
+        <!-- <el-col class="line" :span="2">-</el-col> -->
+        <!-- <el-col :span="11">
           <el-time-picker
             placeholder="选择时间"
             v-model="form.date2"
             style="width: 100%"
           ></el-time-picker>
-        </el-col>
+        </el-col> -->
       </el-form-item>
       <el-form-item label="收费模式">
         <el-radio-group v-model="form.resource">
@@ -64,11 +64,11 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">立即创建</el-button>
+        <el-button type="primary" @click="onSubmit">立即修改</el-button>
         <el-button>取消</el-button>
       </el-form-item>
     </el-form>
-    <el-table
+    <!-- <el-table
       :data="dataList"
       border
       v-loading="dataListLoading"
@@ -151,11 +151,11 @@
     >
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
-    <add-or-update
+    <!-- <add-or-update
       v-if="addOrUpdateVisible"
       ref="addOrUpdate"
       @refreshDataList="getDataList"
-    ></add-or-update>
+    ></add-or-update> -->
   </div>
 </template>
 

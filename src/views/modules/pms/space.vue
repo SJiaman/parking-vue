@@ -15,7 +15,7 @@
       border
       v-loading="dataListLoading"
       @selection-change="selectionChangeHandle"
-      style="width: 100%;">
+      style="width: 100%;" :header-cell-style="{background:'#F1EDD4'}">
       <el-table-column
         type="selection"
         header-align="center"
@@ -58,6 +58,7 @@
         header-align="center"
         align="center"
         label="车位类型">
+        <template slot-scope="scope">{{scope.row.type == 0 ? '租用': '购买'}}</template> 
       </el-table-column>
       <el-table-column
         fixed="right"

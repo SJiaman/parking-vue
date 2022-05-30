@@ -29,8 +29,9 @@
         >
       </el-form-item>
     </el-form> -->
-    <el-form ref="form" :model="form" label-width="80px">
+    <!-- <el-form ref="form" :data="dataList" label-width="80px">
       <el-form-item label="免费时长">
+        <div><span></span></div>
         <el-input v-model="form.name" ></el-input>
       </el-form-item>
       <el-form-item label="计时单位（分钟）">
@@ -41,21 +42,21 @@
       </el-form-item>
       <el-form-item label="单位费用（元）">
         <el-col :span="11">
-          <el-date-picker
+          <el-date-picker     
             type="date"
             placeholder="选择日期"
             v-model="form.date1"
             style="width: 100%"
           ></el-date-picker>
         </el-col>
-        <!-- <el-col class="line" :span="2">-</el-col> -->
-        <!-- <el-col :span="11">
+        <el-col class="line" :span="2">-</el-col> 
+        <el-col :span="11">
           <el-time-picker
             placeholder="选择时间"
             v-model="form.date2"
             style="width: 100%"
           ></el-time-picker>
-        </el-col> -->
+        </el-col>
       </el-form-item>
       <el-form-item label="收费模式">
         <el-radio-group v-model="form.resource">
@@ -67,8 +68,8 @@
         <el-button type="primary" @click="onSubmit">立即修改</el-button>
         <el-button>取消</el-button>
       </el-form-item>
-    </el-form>
-    <!-- <el-table
+    </el-form> -->
+    <el-table
       :data="dataList"
       border
       v-loading="dataListLoading"
@@ -111,6 +112,24 @@
       >
       </el-table-column>
       <el-table-column
+        prop="dayMaxCost"
+        header-align="center"
+        align="center"
+        label="每天最大收费(元)"
+      >
+      </el-table-column>
+       <el-table-column
+        prop="chargeMode"
+        header-align="center"
+        align="center"
+        label="收费模式"
+      >
+       <template slot-scope="scope">
+        <el-tag v-if="scope.row.chargeMode == 0">后进收费</el-tag>
+        <el-tag v-if="scope.row.chargeMode == 1" type="success">先出收费</el-tag>
+      </template> 
+      </el-table-column>
+      <el-table-column
         prop="createTime"
         header-align="center"
         align="center"
@@ -151,11 +170,11 @@
     >
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
-    <!-- <add-or-update
+    <add-or-update
       v-if="addOrUpdateVisible"
       ref="addOrUpdate"
       @refreshDataList="getDataList"
-    ></add-or-update> -->
+    ></add-or-update>
   </div>
 </template>
 
@@ -164,16 +183,6 @@ import AddOrUpdate from "./price-add-or-update";
 export default {
   data() {
     return {
-      form: {
-        name: 'hello',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      },
       dataForm: {
         key: "",
       },

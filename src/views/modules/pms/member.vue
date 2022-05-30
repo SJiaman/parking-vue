@@ -15,34 +15,34 @@
       border
       v-loading="dataListLoading"
       @selection-change="selectionChangeHandle"
-      style="width: 100%;" :header-cell-style="{background:'#F1EDD4'}">
+      style="width: 100%;">
       <el-table-column
         type="selection"
         header-align="center"
         align="center"
         width="50">
       </el-table-column>
-       <el-table-column
+      <el-table-column
         prop="id"
         header-align="center"
         align="center"
-        width="80"
-        label="用户id">
+        label="用户id"
+        width="80">
       </el-table-column>
       <el-table-column
         prop="name"
         header-align="center"
         align="center"
-        label="用户名">
+        label="用户名"
+         width="120">
       </el-table-column>
       <el-table-column
-        prop="gender" 
+        prop="gender"
         header-align="center"
         align="center"
-        label="性别">
-      <template slot-scope="scope">
-        {{scope.row.gender== 0 ? '男' : '女'}}
-      </template>
+        label="性别"
+         width="80">
+       <template slot-scope="sex">{{sex.row.gender == 0 ? '男': '女'}}</template> 
       </el-table-column>
       <el-table-column
         prop="phone"
@@ -60,7 +60,8 @@
         prop="spaceNumber"
         header-align="center"
         align="center"
-        label="车位号">
+        label="车位"
+         width="100">
       </el-table-column>
       <el-table-column
         prop="createTime"

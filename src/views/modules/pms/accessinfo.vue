@@ -33,13 +33,19 @@
         header-align="center"
         align="center"
         label="类型">
-      <template slot-scope="scope">{{scope.row.carType == 0 ? '临时车': '会员车'}}</template> 
+      <template slot-scope="scope">
+        <el-tag v-if="scope.row.carType == 0">临时车</el-tag>
+        <el-tag v-if="scope.row.carType == 1" type="success">会员车</el-tag>
+      </template> 
       </el-table-column>
       <el-table-column
         prop="licensePlate"
         header-align="center"
         align="center"
         label="车牌号">
+        <template slot-scope="licensePlate">
+        <el-tag>{{licensePlate.row.licensePlate}}</el-tag>
+      </template> 
       </el-table-column>
       <el-table-column
         prop="entryTime"
@@ -64,6 +70,9 @@
         header-align="center"
         align="center"
         label="备注">
+      <template slot-scope="remark">
+        {{remark.row.remark == null ? '无': remark.row.remark}}
+      </template> 
       </el-table-column>
     </el-table>
     <el-pagination

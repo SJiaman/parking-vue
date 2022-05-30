@@ -26,39 +26,58 @@
         prop="id"
         header-align="center"
         align="center"
-        label="车位id">
+        label="ID"
+        width="50">
       </el-table-column>
       <el-table-column
         prop="number"
         header-align="center"
         align="center"
-        label="车位编号">
+        label="车位编号"
+        width="100">
       </el-table-column>
       <el-table-column
         prop="member"
         header-align="center"
         align="center"
-        label="车主">
+        label="车主"
+        width="100">
+      </el-table-column>
+      <el-table-column
+        prop="licenseplate"
+        header-align="center"
+        align="center"
+        label="车牌号">
+       <template slot-scope="scope">
+        <el-tag v-for="item in scope.row.licenseplate" :key="item">{{item.licensePlate}}</el-tag>
+      </template> 
       </el-table-column>
       <el-table-column
         prop="section"
         header-align="center"
         align="center"
-        label="车位位置">
+        label="车位位置"
+        width="300">
       </el-table-column>
-      <el-table-column
+      <!-- <el-table-column
         prop="state"
         header-align="center"
         align="center"
-        label="车位状态">
+        label="车位状态"
+        width="100">
        <template slot-scope="scope">{{scope.row.state == 0 ? '在售': '已售'}}</template> 
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column
         prop="type"
         header-align="center"
         align="center"
-        label="车位类型">
-        <template slot-scope="scope">{{scope.row.type == 0 ? '租用': '购买'}}</template> 
+        label="车位类型"
+        width="150">
+        <template slot-scope="scope">
+          <span v-if="scope.row.type == 0">固定车位</span>
+          <span v-if="scope.row.type == 1">月租车位</span>
+          <span v-if="scope.row.type == 2">年租车位</span>
+        </template> 
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -123,6 +142,7 @@
           })
         }).then(({data}) => {
           if (data && data.code === 0) {
+            console.log(data)
             this.dataList = data.page.list
             this.totalPage = data.page.totalCount
           } else {

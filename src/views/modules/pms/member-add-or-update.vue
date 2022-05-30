@@ -4,14 +4,39 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-    <el-form-item label="角色id" prop="userId">
-      <el-input v-model="dataForm.userId" placeholder="角色id"></el-input>
+    <el-form-item label="用户名" prop="name">
+      <el-input v-model="dataForm.name" placeholder="用户名"></el-input>
     </el-form-item>
-    <el-form-item label="注册时间" prop="createTime">
-      <el-input v-model="dataForm.createTime" placeholder="注册时间"></el-input>
+    <el-form-item label="性别" prop="gender">
+       <el-radio-group  v-model="dataForm.gender">
+          <el-radio :label="0">男</el-radio>
+          <el-radio :label="1">女</el-radio>
+        </el-radio-group>
     </el-form-item>
-    <el-form-item label="到期时间" prop="expirationTime">
-      <el-input v-model="dataForm.expirationTime" placeholder="到期时间"></el-input>
+    <el-form-item label="电话号码" prop="phone">
+      <el-input v-model="dataForm.phone" placeholder="电话号码"></el-input>
+    </el-form-item>
+    <el-form-item label="住址" prop="address">
+      <el-input v-model="dataForm.address" placeholder="住址"></el-input>
+    </el-form-item>
+    <el-form-item label="车位" prop="spaceNumber">
+      <el-input v-model="dataForm.spaceNumber" placeholder="车位"></el-input>
+    </el-form-item>
+    <el-form-item label="创建时间" prop="createTime">
+      <el-date-picker
+        value-format="yyyy-MM-dd HH:mm:ss"
+        v-model="dataForm.createTime"
+        type="datetime"
+        placeholder="选择日期时间">
+      </el-date-picker>
+    </el-form-item>
+    <el-form-item label="到期时间" prop="expireTime">
+       <el-date-picker
+        value-format="yyyy-MM-dd HH:mm:ss"
+        v-model="dataForm.expireTime"
+        type="datetime"
+        placeholder="选择日期时间">
+      </el-date-picker>
     </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -28,18 +53,34 @@
         visible: false,
         dataForm: {
           id: 0,
-          userId: '',
+          name: '',
+          gender: 0,
+          phone: '',
+          address: '',
+          spaceNumber: '',
           createTime: '',
-          expirationTime: ''
+          expireTime: ''
         },
         dataRule: {
-          userId: [
-            { required: true, message: '角色id不能为空', trigger: 'blur' }
+          name: [
+            { required: true, message: '用户名不能为空', trigger: 'blur' }
+          ],
+          gender: [
+            { required: true, message: '性别不能为空', trigger: 'blur' }
+          ],
+          phone: [
+            { required: true, message: '电话号码不能为空', trigger: 'blur' }
+          ],
+          address: [
+            { required: true, message: '住址不能为空', trigger: 'blur' }
+          ],
+          spaceNumber: [
+            { required: true, message: '车位不能为空', trigger: 'blur' }
           ],
           createTime: [
-            { required: true, message: '注册时间不能为空', trigger: 'blur' }
+            { required: true, message: '创建时间不能为空', trigger: 'blur' }
           ],
-          expirationTime: [
+          expireTime: [
             { required: true, message: '到期时间不能为空', trigger: 'blur' }
           ]
         }
@@ -58,9 +99,13 @@
               params: this.$http.adornParams()
             }).then(({data}) => {
               if (data && data.code === 0) {
-                this.dataForm.userId = data.member.userId
+                this.dataForm.name = data.member.name
+                this.dataForm.gender = data.member.gender
+                this.dataForm.phone = data.member.phone
+                this.dataForm.address = data.member.address
+                this.dataForm.spaceNumber = data.member.spaceNumber
                 this.dataForm.createTime = data.member.createTime
-                this.dataForm.expirationTime = data.member.expirationTime
+                this.dataForm.expireTime = data.member.expireTime
               }
             })
           }
@@ -75,9 +120,13 @@
               method: 'post',
               data: this.$http.adornData({
                 'id': this.dataForm.id || undefined,
-                'userId': this.dataForm.userId,
+                'name': this.dataForm.name,
+                'gender': this.dataForm.gender,
+                'phone': this.dataForm.phone,
+                'address': this.dataForm.address,
+                'spaceNumber': this.dataForm.spaceNumber,
                 'createTime': this.dataForm.createTime,
-                'expirationTime': this.dataForm.expirationTime
+                'expireTime': this.dataForm.expireTime
               })
             }).then(({data}) => {
               if (data && data.code === 0) {
